@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jasperReport
+        xmlns="http://jasperreports.sourceforge.net/jasperreports"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://jasperreports.sourceforge.net/jasperreports
+            http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+        name="invoice"
+        pageWidth="595"
+        pageHeight="842"
+        columnWidth="535"
+        leftMargin="30"
+        rightMargin="30"
+        topMargin="30"
+        bottomMargin="30"
+        uuid="7d2a5b10-3c44-4e9a-9f3b-1a5c7d8e9f10">
+
+    <parameter name="INVOICE_NUMBER" class="java.lang.String"/>
+    <parameter name="ISSUE_DATE" class="java.lang.String"/>
+    <parameter name="DUE_DATE" class="java.lang.String"/>
+    <parameter name="STATUS" class="java.lang.String"/>
+
+    <parameter name="CUSTOMER_NAME" class="java.lang.String"/>
+    <parameter name="CUSTOMER_EMAIL" class="java.lang.String"/>
+
+    <parameter name="TRACKING_NUMBER" class="java.lang.String"/>
+    <parameter name="VENDOR_NAME" class="java.lang.String"/>
+    <parameter name="ORIGIN_ADDRESS" class="java.lang.String"/>
+    <parameter name="DESTINATION_ADDRESS" class="java.lang.String"/>
+    <parameter name="EXPECTED_DELIVERY" class="java.lang.String"/>
+
+    <parameter name="AMOUNT" class="java.lang.String"/>
+
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
+
+    <background>
+        <band/>
+    </background>
+
+    <title>
+        <band height="150">
+
+            <staticText>
+                <reportElement x="0" y="0" width="300" height="30"/>
+                <textElement>
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <text><![CDATA[GlobalTrade Logistics]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="0" y="32" width="300" height="16"/>
+                <textElement>
+                    <font size="9"/>
+                </textElement>
+                <text><![CDATA[Supply Chain Management System]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="335" y="0" width="200" height="26"/>
+                <textElement textAlignment="Right">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[INVOICE]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="335" y="28" width="200" height="16"/>
+                <textElement textAlignment="Right">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{INVOICE_NUMBER}]]></textFieldExpression>
+            </textField>
+
+            <line>
+                <reportElement x="0" y="55" width="535" height="1"/>
+            </line>
+
+            <staticText>
+                <reportElement x="0" y="65" width="120" height="14"/>
+                <textElement><font size="9" isBold="true"/></textElement>
+                <text><![CDATA[Billed to]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="0" y="79" width="260" height="14"/>
+                <textElement><font size="10"/></textElement>
+                <textFieldExpression><![CDATA[$P{CUSTOMER_NAME}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="0" y="93" width="260" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{CUSTOMER_EMAIL}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="335" y="65" width="80" height="14"/>
+                <textElement><font size="9" isBold="true"/></textElement>
+                <text><![CDATA[Issue date]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="420" y="65" width="115" height="14"/>
+                <textElement textAlignment="Right"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{ISSUE_DATE}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="335" y="81" width="80" height="14"/>
+                <textElement><font size="9" isBold="true"/></textElement>
+                <text><![CDATA[Due date]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="420" y="81" width="115" height="14"/>
+                <textElement textAlignment="Right"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{DUE_DATE}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="335" y="97" width="80" height="14"/>
+                <textElement><font size="9" isBold="true"/></textElement>
+                <text><![CDATA[Status]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="420" y="97" width="115" height="14"/>
+                <textElement textAlignment="Right"><font size="9" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$P{STATUS}]]></textFieldExpression>
+            </textField>
+
+        </band>
+    </title>
+
+    <detail>
+        <band height="220">
+
+            <staticText>
+                <reportElement x="0" y="0" width="535" height="16"/>
+                <textElement><font size="10" isBold="true"/></textElement>
+                <text><![CDATA[Shipment Details]]></text>
+            </staticText>
+
+            <line>
+                <reportElement x="0" y="18" width="535" height="1"/>
+            </line>
+
+            <staticText>
+                <reportElement x="0" y="26" width="140" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <text><![CDATA[Tracking number]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="26" width="385" height="14"/>
+                <textElement><font size="9" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$P{TRACKING_NUMBER}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="42" width="140" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <text><![CDATA[Carrier / Vendor]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="42" width="385" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{VENDOR_NAME}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="58" width="140" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <text><![CDATA[Origin]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="58" width="385" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{ORIGIN_ADDRESS}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="74" width="140" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <text><![CDATA[Destination]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="74" width="385" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{DESTINATION_ADDRESS}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="90" width="140" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <text><![CDATA[Expected delivery]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="90" width="385" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{EXPECTED_DELIVERY}]]></textFieldExpression>
+            </textField>
+
+            <line>
+                <reportElement x="0" y="120" width="535" height="1"/>
+            </line>
+
+            <staticText>
+                <reportElement x="300" y="135" width="120" height="24"/>
+                <textElement textAlignment="Right"><font size="13" isBold="true"/></textElement>
+                <text><![CDATA[Total Due]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="420" y="135" width="115" height="24"/>
+                <textElement textAlignment="Right"><font size="15" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$P{AMOUNT}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="180" width="535" height="30"/>
+                <textElement><font size="8"/></textElement>
+                <text><![CDATA[This invoice was generated automatically by the GlobalTrade Logistics customer portal. For billing enquiries, please raise a support ticket through your account.]]></text>
+            </staticText>
+
+        </band>
+    </detail>
+
+</jasperReport>

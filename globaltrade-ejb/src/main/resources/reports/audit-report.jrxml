@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jasperReport
+        xmlns="http://jasperreports.sourceforge.net/jasperreports"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://jasperreports.sourceforge.net/jasperreports
+            http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+        name="audit-report"
+        pageWidth="842"
+        pageHeight="595"
+        columnWidth="782"
+        leftMargin="30"
+        rightMargin="30"
+        topMargin="25"
+        bottomMargin="25"
+        uuid="7e7d7f12-3d1f-4d8c-a0f1-9b3e7d4c52a1">
+
+    <parameter
+            name="START_DATE"
+            class="java.sql.Date"/>
+
+    <parameter
+            name="END_DATE"
+            class="java.sql.Date"/>
+
+    <parameter
+            name="REPORT_TYPE"
+            class="java.lang.String"/>
+
+    <queryString language="SQL">
+        <![CDATA[
+            SELECT
+                a.id,
+                a.action,
+                a.old_value,
+                a.new_value,
+                a.timestamp,
+                a.details,
+                a.entity_id,
+
+                u.username,
+
+                et.name AS entity_type
+
+            FROM audit_logs a
+
+            INNER JOIN users u
+                ON a.users_id = u.id
+
+            INNER JOIN entity_type et
+                ON a.entity_type_id = et.id
+
+            WHERE a.timestamp >= $P{START_DATE}
+
+              AND a.timestamp <
+                  DATE_ADD(
+                      $P{END_DATE},
+                      INTERVAL 1 DAY
+                  )
+
+            ORDER BY
+                a.timestamp DESC,
+                a.id DESC
+        ]]>
+    </queryString>
+
+    <field
+            name="id"
+            class="java.lang.Integer"/>
+
+    <field
+            name="action"
+            class="java.lang.String"/>
+
+    <field
+            name="old_value"
+            class="java.lang.String"/>
+
+    <field
+            name="new_value"
+            class="java.lang.String"/>
+
+    <field
+            name="timestamp"
+            class="java.sql.Timestamp"/>
+
+    <field
+            name="details"
+            class="java.lang.String"/>
+
+    <field
+            name="entity_id"
+            class="java.lang.Integer"/>
+
+    <field
+            name="username"
+            class="java.lang.String"/>
+
+    <field
+            name="entity_type"
+            class="java.lang.String"/>
+
+    <title>
+
+        <band
+                height="100"
+                splitType="Stretch">
+
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="782"
+                        height="30"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="20"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[GLOBALTRADE LOGISTICS]]>
+                </text>
+
+            </staticText>
+
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="34"
+                        width="782"
+                        height="24"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="15"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[AUDIT LOG REPORT]]>
+                </text>
+
+            </staticText>
+
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="66"
+                        width="782"
+                        height="18"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Reporting Period: "
+                        + new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format($P{START_DATE})
+                        + " to "
+                        + new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format($P{END_DATE})
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </title>
+
+
+    <columnHeader>
+
+        <band
+                height="38"
+                splitType="Stretch">
+
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="35"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[ID]]>
+                </text>
+
+            </staticText>
+
+
+            <staticText>
+
+                <reportElement
+                        x="35"
+                        y="0"
+                        width="100"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Timestamp]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="135"
+                        y="0"
+                        width="85"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[User]]>
+                </text>
+
+            </staticText>
+
+
+            <staticText>
+
+                <reportElement
+                        x="220"
+                        y="0"
+                        width="85"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Action]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="305"
+                        y="0"
+                        width="90"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Entity Type]]>
+                </text>
+
+            </staticText>
+
+
+            <staticText>
+
+                <reportElement
+                        x="395"
+                        y="0"
+                        width="60"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Entity ID]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="455"
+                        y="0"
+                        width="110"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Details]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="565"
+                        y="0"
+                        width="72"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Old Value]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="637"
+                        y="0"
+                        width="145"
+                        height="38"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[New Value]]>
+                </text>
+
+            </staticText>
+
+        </band>
+
+    </columnHeader>
+
+    <detail>
+
+        <band
+                height="45"
+                splitType="Stretch">
+
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="35"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{id}]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField>
+
+                <reportElement
+                        x="35"
+                        y="0"
+                        width="100"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        new java.text.SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm"
+                        ).format($F{timestamp})
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField>
+
+                <reportElement
+                        x="135"
+                        y="0"
+                        width="85"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{username}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="220"
+                        y="0"
+                        width="85"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{action}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="305"
+                        y="0"
+                        width="90"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{entity_type}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="395"
+                        y="0"
+                        width="60"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{entity_id}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    isStretchWithOverflow="true">
+
+                <reportElement
+                        x="455"
+                        y="0"
+                        width="110"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        $F{details} == null
+                        ? ""
+                        : $F{details}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    isStretchWithOverflow="true">
+
+                <reportElement
+                        x="565"
+                        y="0"
+                        width="72"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        $F{old_value} == null
+                        ? "-"
+                        : $F{old_value}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    isStretchWithOverflow="true">
+
+                <reportElement
+                        x="637"
+                        y="0"
+                        width="145"
+                        height="45"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        $F{new_value} == null
+                        ? "-"
+                        : $F{new_value}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </detail>
+
+    <pageFooter>
+
+        <band height="30">
+
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="5"
+                        width="450"
+                        height="18"/>
+
+                <textElement
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Generated by GlobalTrade Reporting System"
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField>
+
+                <reportElement
+                        x="600"
+                        y="5"
+                        width="182"
+                        height="18"/>
+
+                <textElement
+                        textAlignment="Right"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Page " + $V{PAGE_NUMBER}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </pageFooter>
+
+    <noData>
+
+        <band height="70">
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="15"
+                        width="782"
+                        height="40"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="11"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[
+                        No audit logs were found for the selected reporting period.
+                    ]]>
+                </text>
+
+            </staticText>
+
+        </band>
+
+    </noData>
+
+</jasperReport>

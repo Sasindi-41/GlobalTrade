@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jasperReport
+        xmlns="http://jasperreports.sourceforge.net/jasperreports"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://jasperreports.sourceforge.net/jasperreports
+            http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+        name="shipment-report"
+        pageWidth="842"
+        pageHeight="595"
+        columnWidth="782"
+        leftMargin="30"
+        rightMargin="30"
+        topMargin="30"
+        bottomMargin="30"
+        uuid="4f8b9b21-5e72-4c0e-9a11-7a9b2b4a1001">
+
+    <parameter
+            name="START_DATE"
+            class="java.sql.Date"/>
+
+    <parameter
+            name="END_DATE"
+            class="java.sql.Date"/>
+
+    <parameter
+            name="REPORT_TYPE"
+            class="java.lang.String"/>
+
+    <queryString language="SQL">
+        <![CDATA[
+            SELECT
+                s.tracking_number,
+                v.company_name,
+                ss.name AS status_name,
+                s.expected_delivery,
+                s.actual_delivery,
+                s.created_at
+
+            FROM shipments s
+
+            INNER JOIN vendors v
+                ON s.vendors_id = v.id
+
+            INNER JOIN shipment_status ss
+                ON s.shipment_status_id = ss.id
+
+            WHERE s.expected_delivery >= $P{START_DATE}
+
+              AND s.expected_delivery <
+                  DATE_ADD(
+                      $P{END_DATE},
+                      INTERVAL 1 DAY
+                  )
+
+            ORDER BY
+                s.expected_delivery ASC,
+                s.id ASC
+        ]]>
+    </queryString>
+
+    <field
+            name="tracking_number"
+            class="java.lang.String"/>
+
+    <field
+            name="company_name"
+            class="java.lang.String"/>
+
+    <field
+            name="status_name"
+            class="java.lang.String"/>
+
+    <field
+            name="expected_delivery"
+            class="java.sql.Timestamp"/>
+
+    <field
+            name="actual_delivery"
+            class="java.sql.Timestamp"/>
+
+    <field
+            name="created_at"
+            class="java.sql.Timestamp"/>
+
+    <title>
+
+        <band
+                height="90"
+                splitType="Stretch">
+
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="782"
+                        height="28"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="20"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[GLOBALTRADE LOGISTICS]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="32"
+                        width="782"
+                        height="22"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="15"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[SHIPMENT REPORT]]>
+                </text>
+
+            </staticText>
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="62"
+                        width="782"
+                        height="18"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Reporting Period: "
+                        + new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format($P{START_DATE})
+                        + " to "
+                        + new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format($P{END_DATE})
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </title>
+
+    <columnHeader>
+
+        <band height="32">
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="130"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Tracking Number]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="130"
+                        y="0"
+                        width="190"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Vendor]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="320"
+                        y="0"
+                        width="110"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Status]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="430"
+                        y="0"
+                        width="150"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Expected Delivery]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="580"
+                        y="0"
+                        width="130"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Actual Delivery]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="710"
+                        y="0"
+                        width="72"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Created]]>
+                </text>
+
+            </staticText>
+
+        </band>
+
+    </columnHeader>
+
+    <detail>
+
+        <band
+                height="28"
+                splitType="Stretch">
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="130"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{tracking_number}]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField>
+
+                <reportElement
+                        x="130"
+                        y="0"
+                        width="190"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{company_name}]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField>
+
+                <reportElement
+                        x="320"
+                        y="0"
+                        width="110"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{status_name}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    pattern="yyyy-MM-dd HH:mm">
+
+                <reportElement
+                        x="430"
+                        y="0"
+                        width="150"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{expected_delivery}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="580"
+                        y="0"
+                        width="130"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        $F{actual_delivery} == null
+                        ? "—"
+                        : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
+                            .format($F{actual_delivery})
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    pattern="yyyy-MM-dd">
+
+                <reportElement
+                        x="710"
+                        y="0"
+                        width="72"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{created_at}]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </detail>
+
+    <pageFooter>
+
+        <band height="30">
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="5"
+                        width="390"
+                        height="18"/>
+
+                <textElement
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Generated by GlobalTrade Reporting System"
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="600"
+                        y="5"
+                        width="182"
+                        height="18"/>
+
+                <textElement
+                        textAlignment="Right"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Page " + $V{PAGE_NUMBER}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </pageFooter>
+
+    <noData>
+
+        <band height="60">
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="10"
+                        width="782"
+                        height="35"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="11"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[
+                        No shipments were found for the selected reporting period.
+                    ]]>
+                </text>
+
+            </staticText>
+
+        </band>
+
+    </noData>
+
+</jasperReport>

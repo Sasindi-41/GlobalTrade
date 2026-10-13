@@ -1,0 +1,882 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jasperReport
+        xmlns="http://jasperreports.sourceforge.net/jasperreports"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://jasperreports.sourceforge.net/jasperreports
+            http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+        name="route-report"
+        pageWidth="842"
+        pageHeight="595"
+        columnWidth="782"
+        leftMargin="30"
+        rightMargin="30"
+        topMargin="30"
+        bottomMargin="30"
+        uuid="7b8e4c32-91a6-4d25-b7e3-5f9c2a810004">
+
+    <parameter
+            name="START_DATE"
+            class="java.sql.Date"/>
+
+    <parameter
+            name="END_DATE"
+            class="java.sql.Date"/>
+
+    <parameter
+            name="REPORT_TYPE"
+            class="java.lang.String"/>
+
+    <queryString language="SQL">
+        <![CDATA[
+            SELECT
+                r.id,
+                s.tracking_number,
+                v.company_name AS vendor_name,
+
+                CONCAT(
+                    COALESCE(oa.line_1, ''),
+                    CASE
+                        WHEN oa.line_2 IS NOT NULL
+                             AND oa.line_2 <> ''
+                        THEN CONCAT(', ', oa.line_2)
+                        ELSE ''
+                    END,
+                    CASE
+                        WHEN oc.name IS NOT NULL
+                        THEN CONCAT(', ', oc.name)
+                        ELSE ''
+                    END,
+                    CASE
+                        WHEN oco.name IS NOT NULL
+                        THEN CONCAT(', ', oco.name)
+                        ELSE ''
+                    END,
+                    CASE
+                        WHEN oa.postal_code IS NOT NULL
+                             AND oa.postal_code <> ''
+                        THEN CONCAT(' - ', oa.postal_code)
+                        ELSE ''
+                    END
+                ) AS origin_address,
+
+                CONCAT(
+                    COALESCE(da.line_1, ''),
+                    CASE
+                        WHEN da.line_2 IS NOT NULL
+                             AND da.line_2 <> ''
+                        THEN CONCAT(', ', da.line_2)
+                        ELSE ''
+                    END,
+                    CASE
+                        WHEN dc.name IS NOT NULL
+                        THEN CONCAT(', ', dc.name)
+                        ELSE ''
+                    END,
+                    CASE
+                        WHEN dco.name IS NOT NULL
+                        THEN CONCAT(', ', dco.name)
+                        ELSE ''
+                    END,
+                    CASE
+                        WHEN da.postal_code IS NOT NULL
+                             AND da.postal_code <> ''
+                        THEN CONCAT(' - ', da.postal_code)
+                        ELSE ''
+                    END
+                ) AS destination_address,
+
+                r.estimated_distance,
+                r.estimated_duration,
+                r.optimization_score,
+                r.recommended_route,
+                r.calculated_at
+
+            FROM route_optimizations r
+
+            INNER JOIN shipments s
+                ON r.shipments_id = s.id
+
+            INNER JOIN vendors v
+                ON s.vendors_id = v.id
+
+            INNER JOIN addresses oa
+                ON r.origin_address = oa.id
+
+            INNER JOIN city oc
+                ON oa.city_id = oc.id
+
+            INNER JOIN country oco
+                ON oa.country_id = oco.id
+
+            INNER JOIN addresses da
+                ON r.destination_address = da.id
+
+            INNER JOIN city dc
+                ON da.city_id = dc.id
+
+            INNER JOIN country dco
+                ON da.country_id = dco.id
+
+            WHERE r.calculated_at >= $P{START_DATE}
+
+              AND r.calculated_at <
+                  DATE_ADD(
+                      $P{END_DATE},
+                      INTERVAL 1 DAY
+                  )
+
+            ORDER BY
+                r.calculated_at DESC,
+                r.optimization_score DESC
+        ]]>
+    </queryString>
+
+    <field
+            name="id"
+            class="java.lang.Integer"/>
+
+    <field
+            name="tracking_number"
+            class="java.lang.String"/>
+
+    <field
+            name="vendor_name"
+            class="java.lang.String"/>
+
+    <field
+            name="origin_address"
+            class="java.lang.String"/>
+
+    <field
+            name="destination_address"
+            class="java.lang.String"/>
+
+    <field
+            name="estimated_distance"
+            class="java.math.BigDecimal"/>
+
+    <field
+            name="estimated_duration"
+            class="java.lang.Integer"/>
+
+    <field
+            name="optimization_score"
+            class="java.math.BigDecimal"/>
+
+    <field
+            name="recommended_route"
+            class="java.lang.String"/>
+
+    <field
+            name="calculated_at"
+            class="java.sql.Timestamp"/>
+
+    <title>
+
+        <band
+                height="90"
+                splitType="Stretch">
+
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="782"
+                        height="28"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="20"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[GLOBALTRADE LOGISTICS]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="32"
+                        width="782"
+                        height="22"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="15"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[ROUTE OPTIMIZATION REPORT]]>
+                </text>
+
+            </staticText>
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="62"
+                        width="782"
+                        height="18"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Reporting Period: "
+                        + new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format($P{START_DATE})
+                        + " to "
+                        + new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format($P{END_DATE})
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </title>
+
+    <columnHeader>
+
+        <band height="36">
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="90"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Tracking]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="90"
+                        y="0"
+                        width="105"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Vendor]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="195"
+                        y="0"
+                        width="125"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Origin]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="320"
+                        y="0"
+                        width="125"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Destination]]>
+                </text>
+
+            </staticText>
+
+
+            <staticText>
+
+                <reportElement
+                        x="445"
+                        y="0"
+                        width="65"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Distance]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="510"
+                        y="0"
+                        width="65"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Duration]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="575"
+                        y="0"
+                        width="65"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Score]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="640"
+                        y="0"
+                        width="70"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Calculated]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="710"
+                        y="0"
+                        width="72"
+                        height="36"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Route]]>
+                </text>
+
+            </staticText>
+
+        </band>
+
+    </columnHeader>
+
+    <detail>
+
+        <band
+                height="42"
+                splitType="Stretch">
+
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="90"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{tracking_number}]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField>
+
+                <reportElement
+                        x="90"
+                        y="0"
+                        width="105"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{vendor_name}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    isStretchWithOverflow="true">
+
+                <reportElement
+                        x="195"
+                        y="0"
+                        width="125"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{origin_address}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    isStretchWithOverflow="true">
+
+                <reportElement
+                        x="320"
+                        y="0"
+                        width="125"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{destination_address}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    pattern="0.00">
+
+                <reportElement
+                        x="445"
+                        y="0"
+                        width="65"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        $F{estimated_distance}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField>
+
+                <reportElement
+                        x="510"
+                        y="0"
+                        width="65"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        $F{estimated_duration} + " min"
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    pattern="0.00">
+
+                <reportElement
+                        x="575"
+                        y="0"
+                        width="65"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        $F{optimization_score}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField
+                    pattern="yyyy-MM-dd">
+
+                <reportElement
+                        x="640"
+                        y="0"
+                        width="70"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        $F{calculated_at}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    isStretchWithOverflow="true">
+
+                <reportElement
+                        x="710"
+                        y="0"
+                        width="72"
+                        height="42"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{recommended_route}]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </detail>
+
+    <pageFooter>
+
+        <band height="30">
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="5"
+                        width="390"
+                        height="18"/>
+
+                <textElement
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Generated by GlobalTrade Reporting System"
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+
+            <textField>
+
+                <reportElement
+                        x="600"
+                        y="5"
+                        width="182"
+                        height="18"/>
+
+                <textElement
+                        textAlignment="Right"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Page " + $V{PAGE_NUMBER}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </pageFooter>
+
+    <noData>
+
+        <band height="60">
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="10"
+                        width="782"
+                        height="35"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="11"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[
+                        No route optimization records were found
+                        for the selected reporting period.
+                    ]]>
+                </text>
+
+            </staticText>
+
+        </band>
+
+    </noData>
+
+
+</jasperReport>

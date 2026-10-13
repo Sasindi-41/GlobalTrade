@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jasperReport
+        xmlns="http://jasperreports.sourceforge.net/jasperreports"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://jasperreports.sourceforge.net/jasperreports
+            http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+        name="vendor-report"
+        pageWidth="842"
+        pageHeight="595"
+        columnWidth="782"
+        leftMargin="30"
+        rightMargin="30"
+        topMargin="30"
+        bottomMargin="30"
+        uuid="9a7d5c21-3e84-4f62-b9a1-6c2e8d470003">
+
+    <parameter
+            name="START_DATE"
+            class="java.sql.Date"/>
+
+    <parameter
+            name="END_DATE"
+            class="java.sql.Date"/>
+
+    <parameter
+            name="REPORT_TYPE"
+            class="java.lang.String"/>
+
+    <queryString language="SQL">
+        <![CDATA[
+            SELECT
+                v.vendor_code,
+                v.company_name,
+                v.contact_name,
+                v.email,
+                v.phone,
+                v.performance_score,
+                s.name AS status_name,
+                c.name AS country_name,
+                v.created_at
+
+            FROM vendors v
+
+            INNER JOIN status s
+                ON v.status_id = s.id
+
+            INNER JOIN country c
+                ON v.country_id = c.id
+
+            WHERE v.created_at >= $P{START_DATE}
+
+              AND v.created_at <
+                  DATE_ADD(
+                      $P{END_DATE},
+                      INTERVAL 1 DAY
+                  )
+
+            ORDER BY
+                v.created_at DESC,
+                v.company_name ASC
+        ]]>
+    </queryString>
+
+    <field
+            name="vendor_code"
+            class="java.lang.String"/>
+
+    <field
+            name="company_name"
+            class="java.lang.String"/>
+
+    <field
+            name="contact_name"
+            class="java.lang.String"/>
+
+    <field
+            name="email"
+            class="java.lang.String"/>
+
+    <field
+            name="phone"
+            class="java.lang.String"/>
+
+    <field
+            name="performance_score"
+            class="java.math.BigDecimal"/>
+
+    <field
+            name="status_name"
+            class="java.lang.String"/>
+
+    <field
+            name="country_name"
+            class="java.lang.String"/>
+
+    <field
+            name="created_at"
+            class="java.sql.Timestamp"/>
+
+    <title>
+
+        <band
+                height="90"
+                splitType="Stretch">
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="782"
+                        height="28"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="20"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[GLOBALTRADE LOGISTICS]]>
+                </text>
+
+            </staticText>
+
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="32"
+                        width="782"
+                        height="22"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="15"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[VENDOR REPORT]]>
+                </text>
+
+            </staticText>
+
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="62"
+                        width="782"
+                        height="18"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="9"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Reporting Period: "
+                        + new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format($P{START_DATE})
+                        + " to "
+                        + new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .format($P{END_DATE})
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </title>
+
+    <columnHeader>
+
+        <band height="32">
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="85"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Vendor Code]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="85"
+                        y="0"
+                        width="145"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Company]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="230"
+                        y="0"
+                        width="110"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Contact]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="340"
+                        y="0"
+                        width="145"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Email]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="485"
+                        y="0"
+                        width="75"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Score]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="560"
+                        y="0"
+                        width="75"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Status]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="635"
+                        y="0"
+                        width="75"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Country]]>
+                </text>
+
+            </staticText>
+
+            <staticText>
+
+                <reportElement
+                        x="710"
+                        y="0"
+                        width="72"
+                        height="32"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="8"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[Created]]>
+                </text>
+
+            </staticText>
+
+        </band>
+
+    </columnHeader>
+
+    <detail>
+
+        <band
+                height="28"
+                splitType="Stretch">
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="0"
+                        width="85"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{vendor_code}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="85"
+                        y="0"
+                        width="145"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{company_name}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="230"
+                        y="0"
+                        width="110"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{contact_name}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="340"
+                        y="0"
+                        width="145"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Left"
+                        verticalAlignment="Middle">
+
+                    <font size="6"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{email}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    pattern="0.00">
+
+                <reportElement
+                        x="485"
+                        y="0"
+                        width="75"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{performance_score}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="560"
+                        y="0"
+                        width="75"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="7"
+                            isBold="true"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{status_name}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="635"
+                        y="0"
+                        width="75"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{country_name}]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField
+                    pattern="yyyy-MM-dd">
+
+                <reportElement
+                        x="710"
+                        y="0"
+                        width="72"
+                        height="28"/>
+
+                <box>
+                    <pen lineWidth="0.5"/>
+                </box>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font size="7"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[$F{created_at}]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </detail>
+
+    <pageFooter>
+
+        <band height="30">
+
+            <textField>
+
+                <reportElement
+                        x="0"
+                        y="5"
+                        width="390"
+                        height="18"/>
+
+                <textElement
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Generated by GlobalTrade Reporting System"
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+            <textField>
+
+                <reportElement
+                        x="600"
+                        y="5"
+                        width="182"
+                        height="18"/>
+
+                <textElement
+                        textAlignment="Right"
+                        verticalAlignment="Middle">
+
+                    <font size="8"/>
+
+                </textElement>
+
+                <textFieldExpression>
+                    <![CDATA[
+                        "Page " + $V{PAGE_NUMBER}
+                    ]]>
+                </textFieldExpression>
+
+            </textField>
+
+        </band>
+
+    </pageFooter>
+
+    <noData>
+
+        <band height="60">
+
+            <staticText>
+
+                <reportElement
+                        x="0"
+                        y="10"
+                        width="782"
+                        height="35"/>
+
+                <textElement
+                        textAlignment="Center"
+                        verticalAlignment="Middle">
+
+                    <font
+                            size="11"
+                            isBold="true"/>
+
+                </textElement>
+
+                <text>
+                    <![CDATA[
+                        No vendors were found for the selected reporting period.
+                    ]]>
+                </text>
+
+            </staticText>
+
+        </band>
+
+    </noData>
+
+
+</jasperReport>
